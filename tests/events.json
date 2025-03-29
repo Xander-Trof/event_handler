@@ -1,0 +1,102 @@
+[
+    {
+      "sensor_id": 1,
+      "name": "N/A",
+      "temperature": 20,
+      "humidity": 25
+    },
+    {
+      "sensor_id": 2,
+      "name": "N/A"
+    },
+    {
+      "sensor_id": 3,
+      "name": "N/A",
+      "temperature": 13
+    },
+    {
+      "sensor_id": 4,
+      "name": "N/A",
+      "humidity": 58
+    },
+    {
+      "sensor_id": 5,
+      "name": "N/A",
+      "temperature": 23,
+      "humidity": 59
+    },
+    {
+      "sensor_id": 1,
+      "name": "N/A"
+    },
+    {
+      "sensor_id": 2,
+      "name": "N/A",
+      "temperature": 19
+    },
+    {
+      "sensor_id": 3,
+      "name": "N/A",
+      "humidity": 35
+    },
+    {
+      "sensor_id": 4,
+      "name": "N/A",
+      "temperature": 22,
+      "humidity": 50
+    },
+    {
+      "sensor_id": 5,
+      "name": "N/A"
+    },
+    {
+      "sensor_id": 1,
+      "name": "N/A",
+      "temperature": 20
+    },
+    {
+      "sensor_id": 2,
+      "name": "N/A",
+      "humidity": 57
+    },
+    {
+      "sensor_id": 3,
+      "name": "N/A",
+      "temperature": 22,
+      "humidity": 55
+    },
+    {
+      "sensor_id": 4,
+      "name": "N/A"
+    },
+    {
+      "sensor_id": 5,
+      "name": "N/A",
+      "temperature": 13
+    },
+    {
+      "sensor_id": 1,
+      "name": "N/A",
+      "humidity": 45
+    },
+    {
+      "sensor_id": 2,
+      "name": "N/A",
+      "temperature": 21,
+      "humidity": 35
+    },
+    {
+      "sensor_id": 3,
+      "name": "N/A"
+    },
+    {
+      "sensor_id": 4,
+      "name": "N/A",
+      "temperature": 20
+    },
+    {
+      "sensor_id": 5,
+      "name": "N/A",
+      "humidity": 35
+    }
+  ]
