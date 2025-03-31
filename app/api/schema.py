@@ -1,8 +1,7 @@
 import enum
-
 from typing import Optional
-from pydantic import BaseModel, Field, model_validator
 
+from pydantic import BaseModel, Field, model_validator
 
 MAX_TEMP = 2000
 MIN_TEMP = -100
@@ -11,7 +10,7 @@ MIN_HUM = 0
 
 
 class FilterEventsParams(BaseModel):
-    limit: int = Field(10, gt=0, le=100) 
+    limit: int = Field(10, gt=0, le=100)
     page: int = Field(0, ge=0)
     sensor_id: Optional[int] = Field(None, gt=0)
     min_temp: Optional[float] = Field(None, gt=MIN_TEMP, lt=MAX_TEMP)
@@ -24,11 +23,11 @@ class FilterEventsParams(BaseModel):
         if not any(temp is None for temp in (self.min_temp, self.max_temp)):
             if self.min_temp > self.max_temp:
                 raise ValueError("min_temp не может быть больше max_temp")
-        
+
         if not any(hum is None for hum in (self.min_hum, self.max_hum)):
             if self.min_hum > self.max_hum:
                 raise ValueError("min_hum не может быть больше max_hum")
-        
+
         return self
 
 
@@ -39,12 +38,10 @@ class EventParams(BaseModel):
     humidity: Optional[float] = Field(None, ge=0, le=100)
 
 
-
 class SensorType(enum.IntEnum):
     ONE = 1
     TWO = 2
     THREE = 3
-
 
 
 class SensorParams(BaseModel):

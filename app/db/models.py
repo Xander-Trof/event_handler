@@ -1,10 +1,8 @@
-import sqlalchemy
-
 from typing import List
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+
+import sqlalchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
 from app.api.schema import SensorType
 
 
@@ -24,8 +22,12 @@ class Event(Base):
     sensor: Mapped["Sensor"] = relationship(back_populates="events")
 
     __table_args__ = (
-        sqlalchemy.CheckConstraint("temperature >-100 AND temperature <2000", name="check_temperature_range"),
-        sqlalchemy.CheckConstraint("humidity >=0 AND humidity <=100", name="check_humidity_range"),
+        sqlalchemy.CheckConstraint(
+            "temperature >-100 AND temperature <2000", name="check_temperature_range"
+        ),
+        sqlalchemy.CheckConstraint(
+            "humidity >=0 AND humidity <=100", name="check_humidity_range"
+        ),
     )
 
     def __repr__(self) -> str:
@@ -37,9 +39,13 @@ class Sensor(Base):
 
     id: Mapped[int] = mapped_column(sqlalchemy.Integer, primary_key=True)
     name: Mapped[str] = mapped_column(sqlalchemy.String(100), default="unknown")
-    sensor_type: Mapped[SensorType] = mapped_column(sqlalchemy.Enum(SensorType), default=SensorType.ONE)
+    sensor_type: Mapped[SensorType] = mapped_column(
+        sqlalchemy.Enum(SensorType), default=SensorType.ONE
+    )
 
-    events: Mapped[List["Event"]] = relationship(back_populates="sensor", cascade="all, delete-orphan")
+    events: Mapped[List["Event"]] = relationship(
+        back_populates="sensor", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"Sensor(id={self.id}, name={self.name}, sensor_type={self.sensor_type})"

@@ -4,6 +4,7 @@
  - Требуется python >= 3.11
  - Устанавливаем poetry: `pip install poetry`
  - Устанавливаем зависимости: `poetry install`
+ - Установить линтеры `pre-commit install`
 
 ## Локльный запуск
  - Перед запуском приложения запуск бд в docker: 

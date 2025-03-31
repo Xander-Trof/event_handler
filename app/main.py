@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from .api.events import events_router
 from .api.sensors import sensors_router
 
