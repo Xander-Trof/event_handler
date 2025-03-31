@@ -1,5 +1,3 @@
-import enum
-
 import sqlalchemy
 
 from typing import List
@@ -7,6 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
+from app.api.schema import SensorType
 
 
 class Base(DeclarativeBase):
@@ -33,18 +32,12 @@ class Event(Base):
         return f"Event(id={self.id}, name={self.name}, temperature={self.temperature}, humidity={self.humidity}, sensor_id={self.sensor_id})"
 
 
-class SensorType(enum.Enum):
-    ONE = 1
-    TWO = 2
-    THREE = 3
-
-
 class Sensor(Base):
     __tablename__ = "sensor"
 
     id: Mapped[int] = mapped_column(sqlalchemy.Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(sqlalchemy.String(100))
-    sensor_type: Mapped[SensorType] = mapped_column(sqlalchemy.Enum(SensorType))
+    name: Mapped[str] = mapped_column(sqlalchemy.String(100), default="unknown")
+    sensor_type: Mapped[SensorType] = mapped_column(sqlalchemy.Enum(SensorType), default=SensorType.ONE)
 
     events: Mapped[List["Event"]] = relationship(back_populates="sensor", cascade="all, delete-orphan")
 

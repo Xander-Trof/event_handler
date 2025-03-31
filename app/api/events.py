@@ -1,56 +1,54 @@
-from typing import Annotated, Optional
-from fastapi import APIRouter, Query, Body
-from pydantic import BaseModel, Field, field_validator
+import json
+from typing import Annotated
+from fastapi import APIRouter, Query, Body, File, UploadFile, HTTPException
+from .schema import FilterEventsParams, EventParams
+from app.db.client import db_client
 
 events_router = APIRouter()
 
 
-class FilterParams(BaseModel):
-    limit: int = Field(1, gt=0, le=100) 
-    page: int = Field(0, ge=0)
-    event_id: Optional[int] = Field(None, gt=0)
-    sensor_id: Optional[int] = Field(None, gt=0)
-    temperature: Optional[float] = Field(None, gt=-100.0, lt=1500)
-    humidity: Optional[float] = Field(None, ge=0, le=100)
-
-    @field_validator("event_id")
-    def check_exclusive(cls, v, info):
-        exclude_fields = [info.data.get(field) for field in ("sensor_id", "temperature", "humidity")]
-        if v and not all([field is None for field in exclude_fields]):
-            raise ValueError("Нельзя указывать event_id одновременно c парамтерами фильтрации")
-        return v
-
-
-class Event(BaseModel):
-    id: Optional[int] = Field(None, gt=0)
-    sensor_id: int = Field(gt=0)
-    name: str = Field(max_length=100)
-    temperature: Optional[float] = Field(None, gt=-100.0, lt=1500)
-    humidity: Optional[float] = Field(None, ge=0, le=100)
+@events_router.get("/event/{event_id}")
+def get_event_by_id(event_id: int):
+    return {
+        "event": db_client.get_event_by_id(event_id),
+    }
 
 @events_router.get("/events/")
-def get_event(filter_params: Annotated[FilterParams, Query()]):
+def get_multiple_events(filter_params: Annotated[FilterEventsParams, Query()]):
     return {
-        "event_id": filter_params.event_id, 
-        "limit": filter_params.limit, 
+        "events": db_client.get_filtered_events(filter_params),
         "page": filter_params.page,
-        "sensor_id": filter_params.sensor_id,
-        "temperature": filter_params.temperature,
-        "humidity": filter_params.humidity,
     }
 
 @events_router.post("/event/")
-def post_event(event: Annotated[Event, Body(embed=True)]):
-    # сохраняем ивент в базу, получаем его id
-    event_id = 5
-    return event_id
+def post_event(event: Annotated[EventParams, Body(embed=False)]):
+    event = db_client.create_event(event)
+    return {
+        "event_id": event.id
+    }
 
 @events_router.put("/event/{event_id}")
-def put_event(event_id: int, event: Annotated[Event, Body(embed=True)]):
-    results = event
-    return results
+def put_event(event_id: int, event: Annotated[EventParams, Body(embed=False)]):
+    return {
+        "event": db_client.update_event_by_id(event_id, event)
+    }
 
 @events_router.delete("/event/{event_id}")
-def delete_event(event_id: int, event: Annotated[Event, Body(embed=True)]):
-    results = event
-    return results
+def delete_event(event_id: int):
+    db_client.delete_event(event_id)
+    return
+
+@events_router.post("/event/file/")
+async def save_json_file(file: Annotated[UploadFile, File()]):
+    if file.content_type != "application/json":
+        raise HTTPException(400, detail="Принимаются файлы только типа json")
+    
+    try: 
+        file_content = await file.read()
+        data = json.loads(file_content)
+    except json.JSONDecodeError as err:
+            raise HTTPException(400, detail="Ошибка форматирования json файла")
+
+    events = db_client.create_multiple_events(data)
+    
+    return {"events": events}
